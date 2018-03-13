@@ -46,10 +46,7 @@ func NewCTest(extensions, paths []string) (*CTest, error) {
 
 	// if paths is empty, then use current directory
 	if len(paths) == 0 {
-		cwd, err := os.Getwd()
-		if err != nil {
-			return ctest, err
-		}
+		cwd, _ := os.Getwd()
 		ctest.watchPaths = []string{cwd}
 	}
 
