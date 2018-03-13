@@ -17,7 +17,19 @@
 
 package ctest_test
 
-import "testing"
+import (
+	"testing"
+
+	"github.com/repejota/ctest"
+)
 
 func TestDummyTest(t *testing.T) {
+
+}
+
+func TestNewCTest(t *testing.T) {
+	_, err := ctest.NewCTest(nil, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
 }
