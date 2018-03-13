@@ -16,3 +16,22 @@
 // under the License.
 
 package ctest
+
+import (
+	"fmt"
+)
+
+// CTest is the main type of the program
+type CTest struct {
+}
+
+// NewCTest creates a new instance
+func NewCTest() *CTest {
+	ctest := &CTest{}
+	return ctest
+}
+
+// Start starts the program main loop
+func (c *CTest) Start() {
+	fmt.Println()
+}
