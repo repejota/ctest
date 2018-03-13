@@ -25,8 +25,9 @@ import (
 )
 
 var (
-	extensionFlag []string
-	verboseFlag   bool
+	extensionFlag       []string
+	recursiveWalkerFlag bool
+	verboseFlag         bool
 )
 
 // RootCmd represents the base command when called without any subcommands
@@ -47,7 +48,7 @@ var RootCmd = &cobra.Command{
 			log.SetLevel(log.DebugLevel)
 		}
 
-		ctest, err := ctest.NewCTest(extensionFlag, args)
+		ctest, err := ctest.NewCTest(extensionFlag, args, recursiveWalkerFlag)
 		if err != nil {
 			log.Printf("Error creating ctest instance %v", err)
 		}
@@ -70,6 +71,7 @@ func init() {
 	// Setup Cobra
 	cobra.OnInitialize(initConfig)
 	RootCmd.Flags().StringArrayVarP(&extensionFlag, "extension", "", []string{".go"}, "set extensions to watch")
+	RootCmd.Flags().BoolVarP(&recursiveWalkerFlag, "recursive", "r", false, "watch files recursively")
 	RootCmd.Flags().BoolVarP(&verboseFlag, "verbose", "v", false, "enable verbose mode")
 }
 

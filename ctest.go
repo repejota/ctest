@@ -38,7 +38,7 @@ type CTest struct {
 }
 
 // NewCTest creates a new instance
-func NewCTest(extensions, paths []string) (*CTest, error) {
+func NewCTest(extensions, paths []string, recursive bool) (*CTest, error) {
 	ctest := &CTest{
 		watchPaths:      paths,
 		watchExtensions: extensions,
@@ -61,7 +61,7 @@ func NewCTest(extensions, paths []string) (*CTest, error) {
 	log.Infof("Watching %d extensions: %q", len(ctest.watchExtensions), ctest.watchExtensions)
 
 	for _, watchPath := range ctest.watchPaths {
-		err := ctest.getFilesToWatch(watchPath, true)
+		err := ctest.getFilesToWatch(watchPath, recursive)
 		if err != nil {
 			return ctest, err
 		}
@@ -74,11 +74,13 @@ func NewCTest(extensions, paths []string) (*CTest, error) {
 
 // getFilesToWatch build the list of files to watch
 func (c *CTest) getFilesToWatch(watchPath string, recursive bool) error {
-	log.Debugf("Walking recursively: %s", watchPath)
 	walkFunc := func(path string, info os.FileInfo, err error) error {
-		path, err = filepath.Abs(path)
+		path, _ = filepath.Abs(path)
+		_, err = os.Stat(path)
 		if err != nil {
-			return err
+			if os.IsNotExist(err) {
+				return err
+			}
 		}
 		if info.IsDir() && path != watchPath && !recursive {
 			return filepath.SkipDir
@@ -93,6 +95,8 @@ func (c *CTest) getFilesToWatch(watchPath string, recursive bool) error {
 		}
 		return nil
 	}
+
+	log.Debugf("Walking: %s", watchPath)
 	err := filepath.Walk(watchPath, walkFunc)
 	if err != nil {
 		return err
@@ -123,14 +127,15 @@ func (c *CTest) handleChanges() {
 			c.watchFiles[file] = ntime
 			c.mu.Unlock()
 
-			c.RunTests()
+			c.RunTests("go", "test", "-v", "./...")
 		}
 	}
 }
 
 // RunTests runs tests
-func (c *CTest) RunTests() bool {
-	cmd := exec.Command("go", "test", "-v", "./...")
+func (c *CTest) RunTests(command string, args ...string) bool {
+	cmd := exec.Command(command)
+	cmd.Args = args
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
