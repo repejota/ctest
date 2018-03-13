@@ -97,7 +97,8 @@ func UsageFunc(cmd *cobra.Command) error {
 	fmt.Println("  goctest [flags] [paths]")
 	fmt.Println()
 	fmt.Println("Flags:")
-	fmt.Println("  -h, --help		help for misto")
+	fmt.Println(`  --extension		file extensions to watch, by default "go"`)
+	fmt.Println("  -h, --help		show this help message")
 	fmt.Println("  -v, --verbose   	enable verbose mode")
 	fmt.Println("  -V, --version   	show version number")
 	return nil
