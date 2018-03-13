@@ -61,7 +61,7 @@ func NewCTest(extensions, paths []string, recursive bool) (*CTest, error) {
 	log.Infof("Watching %d extensions: %q", len(ctest.watchExtensions), ctest.watchExtensions)
 
 	for _, watchPath := range ctest.watchPaths {
-		err := ctest.getFilesToWatch(watchPath, false)
+		err := ctest.getFilesToWatch(watchPath, recursive)
 		if err != nil {
 			return ctest, err
 		}
@@ -86,7 +86,6 @@ func (c *CTest) getFilesToWatch(watchPath string, recursive bool) error {
 			}
 		}
 		if info.IsDir() && path != watchPath && !recursive {
-			log.Debugf("isdir %v watchpath %v:%v recursive %v", info.IsDir(), path, watchPath, recursive)
 			return filepath.SkipDir
 		}
 		for _, extension := range c.watchExtensions {
@@ -100,7 +99,7 @@ func (c *CTest) getFilesToWatch(watchPath string, recursive bool) error {
 		return nil
 	}
 
-	log.Debugf("Walking recursively: %s", watchPath)
+	log.Debugf("Walking: %s", watchPath)
 	err := filepath.Walk(watchPath, walkFunc)
 	if err != nil {
 		return err

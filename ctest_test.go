@@ -47,3 +47,13 @@ func TestNewCTestPathNotExists(t *testing.T) {
 		t.Error(err)
 	}
 }
+
+func TestNewCTestPathNotExistsRelative(t *testing.T) {
+	log.SetLevel(log.FatalLevel)
+
+	paths := []string{"donotexists"}
+	_, err := ctest.NewCTest(nil, paths, false)
+	if err == nil {
+		t.Error(err)
+	}
+}
