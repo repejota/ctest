@@ -25,11 +25,11 @@ import (
 )
 
 func TestNewCTest(t *testing.T) {
-	ctest := ctest.NewCTest()
-	fmt.Println(ctest)
+	ct := ctest.NewCTest()
+	fmt.Println(ct)
 }
 
 func TestCTestStart(t *testing.T) {
-	ctest := ctest.NewCTest()
-	ctest.Start()
+	ct := ctest.NewCTest()
+	ct.Start()
 }
