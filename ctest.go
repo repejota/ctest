@@ -41,6 +41,11 @@ func NewCTest(extensions, paths []string) *CTest {
 		ctest.watchPaths = []string{GetCurrentDirectory()}
 	}
 
+	// if extensions is empty, then use *.go files
+	if len(extensions) == 0 {
+		ctest.watchExtensions = []string{"go"}
+	}
+
 	log.Printf("Watching %d paths %q", len(ctest.watchPaths), ctest.watchPaths)
 
 	log.Printf("Watching %d extensions %q", len(ctest.watchExtensions), ctest.watchExtensions)

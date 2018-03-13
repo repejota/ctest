@@ -16,20 +16,3 @@
 // under the License.
 
 package ctest_test
-
-import (
-	"testing"
-
-	"github.com/repejota/ctest"
-)
-
-func TestNewCTest(t *testing.T) {
-	paths := []string{}
-	_ = ctest.NewCTest(paths)
-}
-
-func TestCTestStart(t *testing.T) {
-	paths := []string{}
-	ct := ctest.NewCTest(paths)
-	ct.Start()
-}
