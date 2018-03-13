@@ -75,10 +75,7 @@ func NewCTest(extensions, paths []string, recursive bool) (*CTest, error) {
 // getFilesToWatch build the list of files to watch
 func (c *CTest) getFilesToWatch(watchPath string, recursive bool) error {
 	walkFunc := func(path string, info os.FileInfo, err error) error {
-		path, err = filepath.Abs(path)
-		if err != nil {
-			return err
-		}
+		path, _ = filepath.Abs(path)
 		_, err = os.Stat(path)
 		if err != nil {
 			if os.IsNotExist(err) {
