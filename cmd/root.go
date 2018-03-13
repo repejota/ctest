@@ -81,7 +81,7 @@ func Execute() {
 func init() {
 	cobra.OnInitialize(initConfig)
 	RootCmd.SetUsageFunc(UsageFunc)
-	RootCmd.Flags().StringArrayVarP(&extensionFlag, "extension", "", []string{"go"}, "set extensions to watch")
+	RootCmd.Flags().StringArrayVarP(&extensionFlag, "extension", "", []string{".go"}, "set extensions to watch")
 	RootCmd.Flags().BoolVarP(&verboseFlag, "verbose", "v", false, "enable verbose mode")
 	RootCmd.Flags().BoolVarP(&versionFlag, "version", "V", false, "show version number")
 }
@@ -97,7 +97,7 @@ func UsageFunc(cmd *cobra.Command) error {
 	fmt.Println("  goctest [flags] [paths]")
 	fmt.Println()
 	fmt.Println("Flags:")
-	fmt.Println(`  --extension		file extensions to watch, by default "go"`)
+	fmt.Println(`  --extension		file extensions to watch, by default ".go"`)
 	fmt.Println("  -h, --help		show this help message")
 	fmt.Println("  -v, --verbose   	enable verbose mode")
 	fmt.Println("  -V, --version   	show version number")

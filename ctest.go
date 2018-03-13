@@ -18,14 +18,23 @@
 package ctest
 
 import (
+	"fmt"
 	"log"
+	"os"
+	"os/exec"
+	"path/filepath"
+	"sync"
+	"time"
 )
 
 // CTest is the main type of the program
 type CTest struct {
-	watchPaths      []string
+	watchPaths []string
+
 	watchExtensions []string
-	watchFiles      []string
+
+	mu         sync.Mutex
+	watchFiles map[string]time.Time
 }
 
 // NewCTest creates a new instance
@@ -33,7 +42,7 @@ func NewCTest(extensions, paths []string) *CTest {
 	ctest := &CTest{
 		watchPaths:      paths,
 		watchExtensions: extensions,
-		watchFiles:      make([]string, 0),
+		watchFiles:      make(map[string]time.Time),
 	}
 
 	// if paths is empty, then use current directory
@@ -41,21 +50,86 @@ func NewCTest(extensions, paths []string) *CTest {
 		ctest.watchPaths = []string{GetCurrentDirectory()}
 	}
 
+	log.Printf("Watching %d paths %q", len(ctest.watchPaths), ctest.watchPaths)
+
 	// if extensions is empty, then use *.go files
 	if len(extensions) == 0 {
-		ctest.watchExtensions = []string{"go"}
+		ctest.watchExtensions = []string{".go"}
 	}
-
-	log.Printf("Watching %d paths %q", len(ctest.watchPaths), ctest.watchPaths)
 
 	log.Printf("Watching %d extensions %q", len(ctest.watchExtensions), ctest.watchExtensions)
 
-	log.Println("Watching files", ctest.watchFiles)
+	for _, watchPath := range ctest.watchPaths {
+		ctest.getFilesToWatch(watchPath, true)
+	}
+
+	log.Printf("Watching %d files for changes", len(ctest.watchFiles))
 
 	return ctest
 }
 
-// Start starts the program main loop
-func (c *CTest) Start() {
+// getFilesToWatch build the list of files to watch for changes
+func (c *CTest) getFilesToWatch(watchPath string, recursive bool) {
+	log.Printf("Walking %s recursively", watchPath)
+	walkFunc := func(path string, info os.FileInfo, err error) error {
+		path, err = filepath.Abs(path)
+		if err != nil {
+			return err
+		}
+		if info.IsDir() && path != watchPath && !recursive {
+			return filepath.SkipDir
+		}
+		for _, extension := range c.watchExtensions {
+			if filepath.Ext(path) == extension {
+				c.mu.Lock()
+				c.watchFiles[path] = info.ModTime()
+				c.mu.Unlock()
+				log.Printf("Watching %s", path)
+			}
+		}
+		return nil
+	}
+	filepath.Walk(watchPath, walkFunc)
+}
 
+// Start starts the main loop
+func (c *CTest) Start() {
+	for {
+		c.handleChanges()
+		time.Sleep(time.Duration(1 * time.Second)) // 1 second delay
+	}
+}
+
+// handleChanges handles file changes
+func (c *CTest) handleChanges() {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+	for file, modtime := range c.watchFiles {
+		stat, err := os.Stat(file)
+		if err != nil {
+			log.Printf("Changed file %s and got an error %s", file, err.Error())
+		}
+		ntime := stat.ModTime()
+		if ntime.Sub(modtime) > 0 {
+			c.watchFiles[file] = ntime
+			log.Printf("Changed file %s", file)
+			// execute tests
+			c.RunTests()
+		}
+	}
+}
+
+// RunTests runs tests
+func (c *CTest) RunTests() bool {
+	cmd := exec.Command("go", "test", "-v", "./...")
+	cmd.Stdin = os.Stdin
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	err := cmd.Run()
+	fmt.Println("[STDOUT]", cmd.Stdout)
+	fmt.Println("[STDERR]", cmd.Stderr)
+	if err != nil {
+		return false
+	}
+	return true
 }

@@ -16,3 +16,8 @@
 // under the License.
 
 package ctest_test
+
+import "testing"
+
+func TestDummyTest(t *testing.T) {
+}
