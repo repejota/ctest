@@ -65,7 +65,10 @@ func TestRunTests(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	ct.RunTests("true")
+	res := ct.RunTests("true")
+	if !res {
+		t.Error("failed")
+	}
 }
 
 func TestRunTestsFailCommand(t *testing.T) {
@@ -75,5 +78,8 @@ func TestRunTestsFailCommand(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	ct.RunTests("false")
+	res := ct.RunTests("false")
+	if res {
+		t.Error("not failed")
+	}
 }
