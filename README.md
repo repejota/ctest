@@ -5,7 +5,7 @@ Watch files in directory and run tests for them
 
 ## Badges
 
-* License [![License][https://img.shields.io/badge/License-Apache-blue.svg]][https://www.apache.org/licenses/LICENSE-2.0]
+* License [![License][https://img.shields.io/badge/License-Apache-blue.svg]][https://www.apache.org/licenses/LICENSE-2.0)]
 
 * Test Coverage Master [![Coverage Status](https://coveralls.io/repos/github/repejota/ctest/badge.svg?branch=master)](https://coveralls.io/github/repejota/ctest?branch=master)
 * Test Coverage Develop [![Coverage Status](https://coveralls.io/repos/github/repejota/ctest/badge.svg?branch=develop)](https://coveralls.io/github/repejota/ctest?branch=develop)
