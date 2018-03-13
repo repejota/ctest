@@ -5,7 +5,7 @@ Watch files in directory and run tests for them
 
 ## Badges
 
-* License [![License][https://img.shields.io/badge/License-Apache-blue.svg]][https://www.apache.org/licenses/LICENSE-2.0)]
+* License [![License][License-Image]][License-Url]
 
 * Test Coverage Master [![Coverage Status](https://coveralls.io/repos/github/repejota/ctest/badge.svg?branch=master)](https://coveralls.io/github/repejota/ctest?branch=master)
 * Test Coverage Develop [![Coverage Status](https://coveralls.io/repos/github/repejota/ctest/badge.svg?branch=develop)](https://coveralls.io/github/repejota/ctest?branch=develop)
@@ -30,3 +30,6 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
+
+[License-Url]: http://opensource.org/licenses/Apache
+[License-Image]: https://img.shields.io/badge/License-Apache-blue.svg
