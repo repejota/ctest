@@ -80,6 +80,12 @@ func (c *CTest) getFilesToWatch(watchPath string, recursive bool) error {
 		if err != nil {
 			return err
 		}
+		_, err = os.Stat(path)
+		if err != nil {
+			if os.IsNotExist(err) {
+				return err
+			}
+		}
 		if info.IsDir() && path != watchPath && !recursive {
 			return filepath.SkipDir
 		}
