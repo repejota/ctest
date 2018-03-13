@@ -67,3 +67,13 @@ func TestRunTests(t *testing.T) {
 	}
 	ct.RunTests("true")
 }
+
+func TestRunTestsFailCommand(t *testing.T) {
+	log.SetLevel(log.FatalLevel)
+
+	ct, err := ctest.NewCTest(nil, nil, false)
+	if err != nil {
+		t.Error(err)
+	}
+	ct.RunTests("false")
+}
