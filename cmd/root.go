@@ -29,8 +29,9 @@ import (
 )
 
 var (
-	verboseFlag bool
-	versionFlag bool
+	extensionFlag []string
+	verboseFlag   bool
+	versionFlag   bool
 )
 
 // RootCmd represents the base command when called without any subcommands
@@ -61,9 +62,7 @@ var RootCmd = &cobra.Command{
 			os.Exit(0)
 		}
 
-		paths := args
-
-		ctest := ctest.NewCTest(paths)
+		ctest := ctest.NewCTest(extensionFlag, args)
 
 		ctest.Start()
 	},
@@ -82,6 +81,7 @@ func Execute() {
 func init() {
 	cobra.OnInitialize(initConfig)
 	RootCmd.SetUsageFunc(UsageFunc)
+	RootCmd.Flags().StringArrayVarP(&extensionFlag, "extension", "", []string{"go"}, "set extensions to watch")
 	RootCmd.Flags().BoolVarP(&verboseFlag, "verbose", "v", false, "enable verbose mode")
 	RootCmd.Flags().BoolVarP(&versionFlag, "version", "V", false, "show version number")
 }

@@ -29,10 +29,10 @@ type CTest struct {
 }
 
 // NewCTest creates a new instance
-func NewCTest(paths []string) *CTest {
+func NewCTest(extensions, paths []string) *CTest {
 	ctest := &CTest{
 		watchPaths:      paths,
-		watchExtensions: make([]string, 0),
+		watchExtensions: extensions,
 		watchFiles:      make([]string, 0),
 	}
 
@@ -41,11 +41,9 @@ func NewCTest(paths []string) *CTest {
 		ctest.watchPaths = []string{GetCurrentDirectory()}
 	}
 
-	log.Println("Watching paths", ctest.watchPaths)
+	log.Printf("Watching %d paths %q", len(ctest.watchPaths), ctest.watchPaths)
 
-	//ctest.watchExtensions = []string{"*.go"}
-
-	log.Println("Watching extensions", ctest.watchExtensions)
+	log.Printf("Watching %d extensions %q", len(ctest.watchExtensions), ctest.watchExtensions)
 
 	log.Println("Watching files", ctest.watchFiles)
 
