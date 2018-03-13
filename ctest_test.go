@@ -32,7 +32,7 @@ func TestDummyTest(t *testing.T) {
 func TestNewCTest(t *testing.T) {
 	log.SetLevel(log.FatalLevel)
 
-	_, err := ctest.NewCTest(nil, nil)
+	_, err := ctest.NewCTest(nil, nil, false)
 	if err != nil {
 		t.Error(err)
 	}
@@ -42,7 +42,7 @@ func TestNewCTestPathNotExists(t *testing.T) {
 	log.SetLevel(log.FatalLevel)
 
 	paths := []string{"/donotexists"}
-	_, err := ctest.NewCTest(nil, paths)
+	_, err := ctest.NewCTest(nil, paths, false)
 	if err == nil {
 		t.Error(err)
 	}
