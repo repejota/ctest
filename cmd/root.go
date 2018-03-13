@@ -18,14 +18,10 @@
 package cmd
 
 import (
-	"fmt"
-	"io/ioutil"
-	"log"
-	"os"
-	"time"
+	log "github.com/sirupsen/logrus"
+	"github.com/spf13/cobra"
 
 	"github.com/repejota/ctest"
-	"github.com/spf13/cobra"
 )
 
 var (
@@ -39,9 +35,16 @@ var RootCmd = &cobra.Command{
 	Short: "Watch files and execute tests",
 	Long:  `goctest continuouslly watch for file changes and execute tests`,
 	Run: func(cmd *cobra.Command, args []string) {
+		// Setup default logger
+		log.SetLevel(log.FatalLevel)
+		formatter := &log.TextFormatter{
+			FullTimestamp: true,
+		}
+		log.SetFormatter(formatter)
+
 		// --verbose
 		if verboseFlag {
-			log.SetOutput(os.Stderr)
+			log.SetLevel(log.DebugLevel)
 		}
 
 		ctest, err := ctest.NewCTest(extensionFlag, args)
@@ -64,13 +67,6 @@ func Execute() {
 }
 
 func init() {
-	// Setup default logger
-	log.SetFlags(0)
-	t := time.Now()
-	tf := t.Format(time.RFC3339)
-	prefix := fmt.Sprintf("ctest[%s]: ", tf)
-	log.SetPrefix(prefix)
-	log.SetOutput(ioutil.Discard)
 	// Setup Cobra
 	cobra.OnInitialize(initConfig)
 	RootCmd.Flags().StringArrayVarP(&extensionFlag, "extension", "", []string{".go"}, "set extensions to watch")

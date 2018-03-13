@@ -18,13 +18,13 @@
 package ctest
 
 import (
-	"fmt"
-	"log"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"sync"
 	"time"
+
+	log "github.com/sirupsen/logrus"
 )
 
 // CTest is the main type of the program
@@ -47,17 +47,18 @@ func NewCTest(extensions, paths []string) (*CTest, error) {
 
 	// if paths is empty, then use current directory
 	if len(paths) == 0 {
-		ctest.watchPaths = []string{GetCurrentDirectory()}
+		cwd, _ := os.Getwd()
+		ctest.watchPaths = []string{cwd}
 	}
 
-	log.Printf("Watching %d paths %q", len(ctest.watchPaths), ctest.watchPaths)
+	log.Infof("Watching %d paths: %q", len(ctest.watchPaths), ctest.watchPaths)
 
 	// if extensions is empty, then use *.go files
 	if len(extensions) == 0 {
 		ctest.watchExtensions = []string{".go"}
 	}
 
-	log.Printf("Watching %d extensions %q", len(ctest.watchExtensions), ctest.watchExtensions)
+	log.Infof("Watching %d extensions: %q", len(ctest.watchExtensions), ctest.watchExtensions)
 
 	for _, watchPath := range ctest.watchPaths {
 		err := ctest.getFilesToWatch(watchPath, true)
@@ -66,14 +67,14 @@ func NewCTest(extensions, paths []string) (*CTest, error) {
 		}
 	}
 
-	log.Printf("Watching %d files for changes", len(ctest.watchFiles))
+	log.Infof("Watching %d files", len(ctest.watchFiles))
 
 	return ctest, nil
 }
 
-// getFilesToWatch build the list of files to watch for changes
+// getFilesToWatch build the list of files to watch
 func (c *CTest) getFilesToWatch(watchPath string, recursive bool) error {
-	log.Printf("Walking %s recursively", watchPath)
+	log.Debugf("Walking recursively: %s", watchPath)
 	walkFunc := func(path string, info os.FileInfo, err error) error {
 		path, err = filepath.Abs(path)
 		if err != nil {
@@ -87,7 +88,7 @@ func (c *CTest) getFilesToWatch(watchPath string, recursive bool) error {
 				c.mu.Lock()
 				c.watchFiles[path] = info.ModTime()
 				c.mu.Unlock()
-				log.Printf("Watching %s", path)
+				log.Debugf("Watching: %s", path)
 			}
 		}
 		return nil
@@ -109,18 +110,19 @@ func (c *CTest) Start() {
 
 // handleChanges handles file changes
 func (c *CTest) handleChanges() {
-	c.mu.Lock()
-	defer c.mu.Unlock()
 	for file, modtime := range c.watchFiles {
 		stat, err := os.Stat(file)
 		if err != nil {
-			log.Printf("Changed file %s and got an error %s", file, err.Error())
+			log.Errorf("can't get file info: %s", err.Error())
 		}
 		ntime := stat.ModTime()
 		if ntime.Sub(modtime) > 0 {
+			log.Debugf("Changed file: %s", file)
+
+			c.mu.Lock()
 			c.watchFiles[file] = ntime
-			log.Printf("Changed file %s", file)
-			// execute tests
+			c.mu.Unlock()
+
 			c.RunTests()
 		}
 	}
@@ -133,9 +135,8 @@ func (c *CTest) RunTests() bool {
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	err := cmd.Run()
-	fmt.Println("[STDOUT]", cmd.Stdout)
-	fmt.Println("[STDERR]", cmd.Stderr)
 	if err != nil {
+		log.Errorf("tests failed: %v", err)
 		return false
 	}
 	return true

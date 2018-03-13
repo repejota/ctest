@@ -50,7 +50,8 @@ lint:	## Lint source code
 # Dependencies
 
 deps:	## Install package dependencies
-	go get -u github.com/spf13/cobra/cobra
+	go get -v -t -d -u github.com/spf13/cobra/cobra
+	go get -v -t -d -u github.com/sirupsen/logrus
 
 dev-deps:	## Install devellpment dependencies
 	go get -v -t -u github.com/alecthomas/gometalinter

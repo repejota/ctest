@@ -17,7 +17,23 @@
 
 package ctest_test
 
-import "testing"
+import (
+	"testing"
+
+	log "github.com/sirupsen/logrus"
+
+	"github.com/repejota/ctest"
+)
 
 func TestDummyTest(t *testing.T) {
+
+}
+
+func TestNewCTest(t *testing.T) {
+	log.SetLevel(log.FatalLevel)
+
+	_, err := ctest.NewCTest(nil, nil)
+	if err != nil {
+		t.Error(err)
+	}
 }
