@@ -45,7 +45,9 @@ func main() {
 		os.Exit(0)
 	}
 
-	ctest := ctest.NewCTest()
+	paths := flag.Args()
+
+	ctest := ctest.NewCTest(paths)
 
 	ctest.Start()
 }

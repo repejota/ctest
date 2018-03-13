@@ -17,21 +17,20 @@
 
 package ctest
 
-import (
-	"fmt"
-)
-
 // CTest is the main type of the program
 type CTest struct {
+	watchPaths []string
 }
 
 // NewCTest creates a new instance
-func NewCTest() *CTest {
-	ctest := &CTest{}
+func NewCTest(paths []string) *CTest {
+	ctest := &CTest{
+		watchPaths: paths,
+	}
 	return ctest
 }
 
 // Start starts the program main loop
 func (c *CTest) Start() {
-	fmt.Println()
+
 }
