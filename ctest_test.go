@@ -18,18 +18,18 @@
 package ctest_test
 
 import (
-	"fmt"
 	"testing"
 
 	"github.com/repejota/ctest"
 )
 
 func TestNewCTest(t *testing.T) {
-	ct := ctest.NewCTest()
-	fmt.Println(ct)
+	paths := []string{}
+	_ = ctest.NewCTest(paths)
 }
 
 func TestCTestStart(t *testing.T) {
-	ct := ctest.NewCTest()
+	paths := []string{}
+	ct := ctest.NewCTest(paths)
 	ct.Start()
 }

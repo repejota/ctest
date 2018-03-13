@@ -19,40 +19,15 @@ package ctest
 
 import (
 	"log"
+	"os"
+	"path/filepath"
 )
 
-// CTest is the main type of the program
-type CTest struct {
-	watchPaths      []string
-	watchExtensions []string
-	watchFiles      []string
-}
-
-// NewCTest creates a new instance
-func NewCTest(paths []string) *CTest {
-	ctest := &CTest{
-		watchPaths:      paths,
-		watchExtensions: make([]string, 0),
-		watchFiles:      make([]string, 0),
+// Just return folder where executable has running
+func GetCurrentDirectory() string {
+	dir, err := filepath.Abs(filepath.Dir(os.Args[0]))
+	if err != nil {
+		log.Fatal(err)
 	}
-
-	// if paths is empty, then use current directory
-	if len(paths) == 0 {
-		ctest.watchPaths = []string{GetCurrentDirectory()}
-	}
-
-	log.Println("Watching paths", ctest.watchPaths)
-
-	//ctest.watchExtensions = []string{"*.go"}
-
-	log.Println("Watching extensions", ctest.watchExtensions)
-
-	log.Println("Watching files", ctest.watchFiles)
-
-	return ctest
-}
-
-// Start starts the program main loop
-func (c *CTest) Start() {
-
+	return dir
 }
