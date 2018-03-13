@@ -20,10 +20,14 @@ package ctest_test
 import (
 	"testing"
 
+	log "github.com/sirupsen/logrus"
+
 	"github.com/repejota/ctest"
 )
 
 func TestShowVersionInfo(t *testing.T) {
+	log.SetLevel(log.FatalLevel)
+
 	expectedOutput := "version 1.2.3 build 91b49a2\n"
 	version := "1.2.3"
 	build := "91b49a2"
