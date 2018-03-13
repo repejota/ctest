@@ -127,14 +127,15 @@ func (c *CTest) handleChanges() {
 			c.watchFiles[file] = ntime
 			c.mu.Unlock()
 
-			c.RunTests()
+			c.RunTests("go", "test", "-v", "./...")
 		}
 	}
 }
 
 // RunTests runs tests
-func (c *CTest) RunTests() bool {
-	cmd := exec.Command("go", "test", "-v", "./...")
+func (c *CTest) RunTests(command string, args ...string) bool {
+	cmd := exec.Command(command)
+	cmd.Args = args
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
