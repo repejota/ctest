@@ -60,9 +60,10 @@ func TestNewCTestPathNotExistsRelative(t *testing.T) {
 
 func TestRunTests(t *testing.T) {
 	log.SetLevel(log.FatalLevel)
-	ctest, err := ctest.NewCTest(nil, nil, false)
+
+	ct, err := ctest.NewCTest(nil, nil, false)
 	if err != nil {
 		t.Error(err)
 	}
-	ctest.RunTests("true")
+	ct.RunTests("true")
 }
