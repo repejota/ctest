@@ -38,7 +38,7 @@ type CTest struct {
 }
 
 // NewCTest creates a new instance
-func NewCTest(extensions, paths []string) *CTest {
+func NewCTest(extensions, paths []string) (*CTest, error) {
 	ctest := &CTest{
 		watchPaths:      paths,
 		watchExtensions: extensions,
@@ -60,16 +60,19 @@ func NewCTest(extensions, paths []string) *CTest {
 	log.Printf("Watching %d extensions %q", len(ctest.watchExtensions), ctest.watchExtensions)
 
 	for _, watchPath := range ctest.watchPaths {
-		ctest.getFilesToWatch(watchPath, true)
+		err := ctest.getFilesToWatch(watchPath, true)
+		if err != nil {
+			return ctest, err
+		}
 	}
 
 	log.Printf("Watching %d files for changes", len(ctest.watchFiles))
 
-	return ctest
+	return ctest, nil
 }
 
 // getFilesToWatch build the list of files to watch for changes
-func (c *CTest) getFilesToWatch(watchPath string, recursive bool) {
+func (c *CTest) getFilesToWatch(watchPath string, recursive bool) error {
 	log.Printf("Walking %s recursively", watchPath)
 	walkFunc := func(path string, info os.FileInfo, err error) error {
 		path, err = filepath.Abs(path)
@@ -89,7 +92,11 @@ func (c *CTest) getFilesToWatch(watchPath string, recursive bool) {
 		}
 		return nil
 	}
-	filepath.Walk(watchPath, walkFunc)
+	err := filepath.Walk(watchPath, walkFunc)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 // Start starts the main loop

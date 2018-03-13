@@ -44,7 +44,10 @@ var RootCmd = &cobra.Command{
 			log.SetOutput(os.Stderr)
 		}
 
-		ctest := ctest.NewCTest(extensionFlag, args)
+		ctest, err := ctest.NewCTest(extensionFlag, args)
+		if err != nil {
+			log.Printf("Error creating ctest instance %v", err)
+		}
 
 		ctest.Start()
 	},
