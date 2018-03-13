@@ -17,8 +17,20 @@
 
 package main
 
-import "github.com/repejota/ctest/cmd"
+import (
+	"github.com/repejota/ctest"
+	"github.com/repejota/ctest/cmd"
+)
+
+var (
+	// Version is the current version number
+	Version string
+	// Build is the current build id
+	Build string
+)
 
 func main() {
+	cmd.RootCmd.SetVersionTemplate(`{{with .Name}}{{printf "%s " .}}{{end}}{{printf "%s" .Version}}`)
+	cmd.RootCmd.Version = ctest.ShowVersionInfo(Version, Build)
 	cmd.Execute()
 }

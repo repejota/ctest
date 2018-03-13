@@ -23,7 +23,7 @@ import (
 	"path/filepath"
 )
 
-// Just return folder where executable has running
+// GetCurrentDirectory just return folder where executable has running
 func GetCurrentDirectory() string {
 	dir, err := filepath.Abs(filepath.Dir(os.Args[0]))
 	if err != nil {
