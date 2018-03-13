@@ -17,7 +17,9 @@
 
 package ctest
 
-import "fmt"
+import (
+	"fmt"
+)
 
 // CTest is the main type of the program
 type CTest struct {
@@ -31,5 +33,5 @@ func NewCTest() *CTest {
 
 // Start starts the program main loop
 func (c *CTest) Start() {
-	fmt.Println("do something")
+	fmt.Println()
 }
