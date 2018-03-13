@@ -70,7 +70,7 @@ func init() {
 	log.SetOutput(ioutil.Discard)
 	// Setup Cobra
 	cobra.OnInitialize(initConfig)
-	RootCmd.SetUsageFunc(UsageFunc)
+	//RootCmd.SetUsageFunc(UsageFunc)
 	RootCmd.Flags().StringArrayVarP(&extensionFlag, "extension", "", []string{".go"}, "set extensions to watch")
 	RootCmd.Flags().BoolVarP(&verboseFlag, "verbose", "v", false, "enable verbose mode")
 }
