@@ -18,7 +18,6 @@
 package ctest
 
 import (
-	"fmt"
 	"log"
 	"os"
 	"os/exec"
@@ -33,7 +32,7 @@ type CTest struct {
 
 	watchExtensions []string
 
-	mu         sync.Mutex
+	mu         sync.RWMutex
 	watchFiles map[string]time.Time
 }
 
@@ -47,7 +46,11 @@ func NewCTest(extensions, paths []string) (*CTest, error) {
 
 	// if paths is empty, then use current directory
 	if len(paths) == 0 {
-		ctest.watchPaths = []string{GetCurrentDirectory()}
+		cwd, err := os.Getwd()
+		if err != nil {
+			return ctest, err
+		}
+		ctest.watchPaths = []string{cwd}
 	}
 
 	log.Printf("Watching %d paths %q", len(ctest.watchPaths), ctest.watchPaths)
@@ -109,8 +112,7 @@ func (c *CTest) Start() {
 
 // handleChanges handles file changes
 func (c *CTest) handleChanges() {
-	c.mu.Lock()
-	defer c.mu.Unlock()
+	c.mu.RLock()
 	for file, modtime := range c.watchFiles {
 		stat, err := os.Stat(file)
 		if err != nil {
@@ -118,12 +120,15 @@ func (c *CTest) handleChanges() {
 		}
 		ntime := stat.ModTime()
 		if ntime.Sub(modtime) > 0 {
+			c.mu.Lock()
 			c.watchFiles[file] = ntime
+			c.mu.Unlock()
 			log.Printf("Changed file %s", file)
-			// execute tests
+
 			c.RunTests()
 		}
 	}
+	c.mu.RUnlock()
 }
 
 // RunTests runs tests
@@ -133,8 +138,6 @@ func (c *CTest) RunTests() bool {
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	err := cmd.Run()
-	fmt.Println("[STDOUT]", cmd.Stdout)
-	fmt.Println("[STDERR]", cmd.Stderr)
 	if err != nil {
 		return false
 	}
