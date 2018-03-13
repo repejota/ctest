@@ -70,7 +70,6 @@ func init() {
 	log.SetOutput(ioutil.Discard)
 	// Setup Cobra
 	cobra.OnInitialize(initConfig)
-	//RootCmd.SetUsageFunc(UsageFunc)
 	RootCmd.Flags().StringArrayVarP(&extensionFlag, "extension", "", []string{".go"}, "set extensions to watch")
 	RootCmd.Flags().BoolVarP(&verboseFlag, "verbose", "v", false, "enable verbose mode")
 }
@@ -78,17 +77,4 @@ func init() {
 // initConfig reads in config file and ENV variables if set.
 func initConfig() {
 	// Unimplemented
-}
-
-// UsageFunc prints command usage help message
-func UsageFunc(cmd *cobra.Command) error {
-	fmt.Println("Usage:")
-	fmt.Println("  goctest [flags] [paths]")
-	fmt.Println()
-	fmt.Println("Flags:")
-	fmt.Println(`  --extension		file extensions to watch, by default ".go"`)
-	fmt.Println("  --help, -h		show this help message")
-	fmt.Println("  --verbose, -v   	enable verbose mode")
-	fmt.Println("  --version   		show version number")
-	return nil
 }
