@@ -31,7 +31,6 @@ import (
 var (
 	extensionFlag []string
 	verboseFlag   bool
-	versionFlag   bool
 )
 
 // RootCmd represents the base command when called without any subcommands
@@ -40,26 +39,9 @@ var RootCmd = &cobra.Command{
 	Short: "Watch files and execute tests",
 	Long:  `goctest continuouslly watch for file changes and execute tests`,
 	Run: func(cmd *cobra.Command, args []string) {
-		// Setup default logger
-		log.SetFlags(0)
-		t := time.Now()
-		tf := t.Format(time.RFC3339)
-		prefix := fmt.Sprintf("ctest[%s]: ", tf)
-		log.SetPrefix(prefix)
-		log.SetOutput(ioutil.Discard)
-
 		// --verbose
 		if verboseFlag {
 			log.SetOutput(os.Stderr)
-		}
-
-		// --version
-		if versionFlag {
-			// TODO:
-			// * Do not hardcode version and build
-			output := ctest.ShowVersionInfo("1.2.3", "abcdefg")
-			fmt.Println(output)
-			os.Exit(0)
 		}
 
 		ctest := ctest.NewCTest(extensionFlag, args)
@@ -79,11 +61,18 @@ func Execute() {
 }
 
 func init() {
+	// Setup default logger
+	log.SetFlags(0)
+	t := time.Now()
+	tf := t.Format(time.RFC3339)
+	prefix := fmt.Sprintf("ctest[%s]: ", tf)
+	log.SetPrefix(prefix)
+	log.SetOutput(ioutil.Discard)
+	// Setup Cobra
 	cobra.OnInitialize(initConfig)
 	RootCmd.SetUsageFunc(UsageFunc)
 	RootCmd.Flags().StringArrayVarP(&extensionFlag, "extension", "", []string{".go"}, "set extensions to watch")
 	RootCmd.Flags().BoolVarP(&verboseFlag, "verbose", "v", false, "enable verbose mode")
-	RootCmd.Flags().BoolVarP(&versionFlag, "version", "V", false, "show version number")
 }
 
 // initConfig reads in config file and ENV variables if set.
@@ -98,8 +87,8 @@ func UsageFunc(cmd *cobra.Command) error {
 	fmt.Println()
 	fmt.Println("Flags:")
 	fmt.Println(`  --extension		file extensions to watch, by default ".go"`)
-	fmt.Println("  -h, --help		show this help message")
-	fmt.Println("  -v, --verbose   	enable verbose mode")
-	fmt.Println("  -V, --version   	show version number")
+	fmt.Println("  --help, -h		show this help message")
+	fmt.Println("  --verbose, -v   	enable verbose mode")
+	fmt.Println("  --version   		show version number")
 	return nil
 }

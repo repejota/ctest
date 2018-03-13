@@ -21,7 +21,7 @@ import "fmt"
 
 // ShowVersionInfo returns version and build information
 func ShowVersionInfo(version, build string) string {
-	tpl := "ctest: Version %s Build %s"
+	tpl := "version %s build %s\n"
 	output := fmt.Sprintf(tpl, version, build)
 	return output
 }

@@ -24,7 +24,7 @@ import (
 )
 
 func TestShowVersionInfo(t *testing.T) {
-	expectedOutput := "ctest: Version 1.2.3 Build 91b49a2"
+	expectedOutput := "version 1.2.3 build 91b49a2"
 	version := "1.2.3"
 	build := "91b49a2"
 	output := ctest.ShowVersionInfo(version, build)
