@@ -15,21 +15,25 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 
-package ctest
+package ctest_test
 
-import "fmt"
+import (
+	"os"
+	"testing"
 
-// CTest is the main type of the program
-type CTest struct {
-}
+	"github.com/repejota/ctest"
+)
 
-// NewCTest creates a new instance
-func NewCTest() *CTest {
-	ctest := &CTest{}
-	return ctest
-}
+func TestGetCurrentDirectory(t *testing.T) {
+	t.Skip("Imposible to know the current directory when executing tests")
 
-// Start starts the program main loop
-func (c *CTest) Start() {
-	fmt.Println("do something")
+	os.Chdir("/tmp")
+	expectedCWD := "/tmp"
+	cwd, err := ctest.GetCurrentDirectory()
+	if err != nil {
+		t.Error(err)
+	}
+	if cwd != "/tmp" {
+		t.Errorf("Expected cwd was %q bug got %q", expectedCWD, cwd)
+	}
 }

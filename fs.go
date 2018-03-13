@@ -17,19 +17,17 @@
 
 package ctest
 
-import "fmt"
+import (
+	"os"
+	"path/filepath"
+)
 
-// CTest is the main type of the program
-type CTest struct {
-}
-
-// NewCTest creates a new instance
-func NewCTest() *CTest {
-	ctest := &CTest{}
-	return ctest
-}
-
-// Start starts the program main loop
-func (c *CTest) Start() {
-	fmt.Println("do something")
+// GetCurrentDirectory gets the current path
+func GetCurrentDirectory() (string, error) {
+	ex, err := os.Executable()
+	if err != nil {
+		return "", err
+	}
+	curPath := filepath.Dir(ex)
+	return curPath, nil
 }

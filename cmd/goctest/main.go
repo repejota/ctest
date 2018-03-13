@@ -44,4 +44,8 @@ func main() {
 		fmt.Println(output)
 		os.Exit(0)
 	}
+
+	ctest := ctest.NewCTest()
+
+	ctest.Start()
 }
