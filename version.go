@@ -15,33 +15,13 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 
-package main
+package ctest
 
-import (
-	"flag"
-	"fmt"
-	"os"
+import "fmt"
 
-	"github.com/repejota/ctest"
-)
-
-var (
-	// Version is the release number
-	//
-	// This number is the latest tag from the git repository.
-	Version string
-	// Build is the build string
-	//
-	// This string is the branch name and the commit hash (short format)
-	Build string
-)
-
-func main() {
-	versionPtr := flag.Bool("version", false, "Show version information")
-	flag.Parse()
-	if *versionPtr {
-		output := ctest.ShowVersionInfo(Version, Build)
-		fmt.Println(output)
-		os.Exit(0)
-	}
+// ShowVersionInfo returns version and build information
+func ShowVersionInfo(version, build string) string {
+	tpl := "ctest: Version %s Build %s"
+	output := fmt.Sprintf(tpl, version, build)
+	return output
 }
