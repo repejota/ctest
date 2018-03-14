@@ -39,7 +39,7 @@ cover-html: cover-profile	## Generate coverage report
 	go tool cover -html=coverage-all.out
 
 .PHONY: coveralls
-coveralls:	## Send coverage report to https://coveralls.io/github/repejota/misto
+coveralls:	## Send coverage report
 	goveralls -service circle-ci -repotoken ACYWS1TOUOtYQpncbY0Ydtaw1Dyh8K8MV
 
 # Lint
