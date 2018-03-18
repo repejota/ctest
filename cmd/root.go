@@ -53,6 +53,7 @@ var RootCmd = &cobra.Command{
 			log.Printf("Error creating ctest instance %v", err)
 		}
 
+		go ctest.StartUI()
 		ctest.Start()
 	},
 }
