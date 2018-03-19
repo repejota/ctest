@@ -104,3 +104,16 @@ func GetPackage(importpath string) (*Package, error) {
 	json.Unmarshal(out, &p)
 	return p, nil
 }
+
+// GetPackages ...
+func GetPackages(imports ...string) ([]*Package, error) {
+	var list []*Package
+	for _, v := range imports {
+		p, err := GetPackage(v)
+		if err != nil {
+			return list, err
+		}
+		list = append(list, p)
+	}
+	return list, nil
+}
