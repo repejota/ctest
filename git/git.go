@@ -19,7 +19,6 @@ package git
 
 import (
 	"encoding/json"
-	"fmt"
 	"os/exec"
 	"strings"
 )
@@ -93,18 +92,6 @@ func ListPackages() ([]string, error) {
 	packagesString := string(out)
 	packagesParts := strings.Split(packagesString, "\n")
 	return packagesParts, nil
-}
-
-// GetPackages ...
-func GetPackages() ([]*Package, error) {
-	out, err := exec.Command("go", "list", "-json").Output()
-	if err != nil {
-		return nil, err
-	}
-	fmt.Println(string(out))
-	var packages []*Package
-	json.Unmarshal(out, &packages)
-	return packages, nil
 }
 
 // GetPackage ...

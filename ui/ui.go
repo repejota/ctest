@@ -18,7 +18,6 @@
 package ui
 
 import (
-	"fmt"
 	"html/template"
 	"log"
 	"net/http"
@@ -43,7 +42,6 @@ func HomeHandler(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			log.Println(err)
 		}
-		fmt.Println(p.Dir)
 		data.Packages = append(data.Packages, p)
 	}
 
