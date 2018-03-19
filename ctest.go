@@ -117,6 +117,9 @@ func (c *CTest) Start() {
 func (c *CTest) StartUI() {
 	r := mux.NewRouter()
 	r.HandleFunc("/", ui.HomeHandler)
+	r.HandleFunc("/test", ui.TestHandler)
+	r.HandleFunc("/cover", ui.CoverHandler)
+	r.HandleFunc("/git", ui.GitHandler)
 	http.Handle("/", r)
 
 	srv := &http.Server{

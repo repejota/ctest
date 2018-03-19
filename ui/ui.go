@@ -18,7 +18,9 @@
 package ui
 
 import (
+	"fmt"
 	"html/template"
+	"log"
 	"net/http"
 
 	"github.com/repejota/ctest/git"
@@ -28,13 +30,62 @@ import (
 func HomeHandler(w http.ResponseWriter, r *http.Request) {
 	// vars := mux.Vars(r)
 
+	tmpl := template.Must(template.ParseFiles("templates/home.html"))
+
+	packages, _ := git.ListPackages()
+
+	var data struct {
+		Packages []*git.Package
+	}
+
+	for _, v := range packages {
+		p, err := git.GetPackage(v)
+		if err != nil {
+			log.Println(err)
+		}
+		fmt.Println(p.Dir)
+		data.Packages = append(data.Packages, p)
+	}
+
+	w.WriteHeader(http.StatusOK)
+	tmpl.Execute(w, data)
+}
+
+// TestHandler ...
+func TestHandler(w http.ResponseWriter, r *http.Request) {
+	// vars := mux.Vars(r)
+
 	var data struct {
 		Packages []string
 	}
-	packages, _ := git.ListPackages()
-	data.Packages = packages
 
 	w.WriteHeader(http.StatusOK)
-	tmpl := template.Must(template.ParseFiles("templates/index.html"))
+	tmpl := template.Must(template.ParseFiles("templates/test.html"))
+	tmpl.Execute(w, data)
+}
+
+// CoverHandler ...
+func CoverHandler(w http.ResponseWriter, r *http.Request) {
+	// vars := mux.Vars(r)
+
+	var data struct {
+		Packages []string
+	}
+
+	w.WriteHeader(http.StatusOK)
+	tmpl := template.Must(template.ParseFiles("templates/cover.html"))
+	tmpl.Execute(w, data)
+}
+
+// GitHandler ...
+func GitHandler(w http.ResponseWriter, r *http.Request) {
+	// vars := mux.Vars(r)
+
+	var data struct {
+		Packages []string
+	}
+
+	w.WriteHeader(http.StatusOK)
+	tmpl := template.Must(template.ParseFiles("templates/git.html"))
 	tmpl.Execute(w, data)
 }
