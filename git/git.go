@@ -15,26 +15,20 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 
-package ui
+package git
 
 import (
-	"html/template"
-	"net/http"
-
-	"github.com/repejota/ctest/git"
+	"fmt"
+	"os/exec"
 )
 
-// HomeHandler ...
-func HomeHandler(w http.ResponseWriter, r *http.Request) {
-	// vars := mux.Vars(r)
-
-	var data struct {
-		Packages []string
+// ListPackages ...
+func ListPackages() ([]string, error) {
+	out, err := exec.Command("go", "list", "./...").Output()
+	if err != nil {
+		return nil, err
 	}
-	packages, _ := git.ListPackages()
-	data.Packages = packages
-
-	w.WriteHeader(http.StatusOK)
-	tmpl := template.Must(template.ParseFiles("templates/index.html"))
-	tmpl.Execute(w, data)
+	var packages []string
+	fmt.Println(string(out))
+	return packages, nil
 }
