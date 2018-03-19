@@ -18,12 +18,15 @@
 package ctest
 
 import (
+	"net/http"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"sync"
 	"time"
 
+	"github.com/gorilla/mux"
+	"github.com/repejota/ctest/ui"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -108,6 +111,25 @@ func (c *CTest) Start() {
 		c.handleChanges()
 		time.Sleep(time.Duration(1 * time.Second)) // 1 second delay
 	}
+}
+
+// StartUI starts the UI server
+func (c *CTest) StartUI() {
+	r := mux.NewRouter()
+	r.HandleFunc("/", ui.HomeHandler)
+	r.HandleFunc("/test", ui.TestHandler)
+	r.HandleFunc("/cover", ui.CoverHandler)
+	r.HandleFunc("/git", ui.GitHandler)
+	http.Handle("/", r)
+
+	srv := &http.Server{
+		Handler: r,
+		Addr:    "127.0.0.1:8080",
+		// Good practice: enforce timeouts for servers you create!
+		WriteTimeout: 15 * time.Second,
+		ReadTimeout:  15 * time.Second,
+	}
+	log.Fatal(srv.ListenAndServe())
 }
 
 // handleChanges handles file changes
