@@ -16,6 +16,11 @@ install:	## Build and install package on your system
 version:	## Show version information
 	@echo $(VERSION)-$(BUILD)
 
+# Run
+.PHONY: run
+run: install
+	goctest
+
 # Testing
 
 .PHONY: test

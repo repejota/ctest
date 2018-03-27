@@ -27,19 +27,11 @@ import (
 
 // HomeHandler ...
 func HomeHandler(w http.ResponseWriter, r *http.Request) {
-	tmpl := template.Must(template.ParseFiles("templates/home.html"))
-	packages, _ := git.ListPackages()
 	var data struct {
-		Packages []*git.Package
-	}
-	for _, v := range packages {
-		p, err := git.GetPackage(v)
-		if err != nil {
-			log.Println(err)
-		}
-		data.Packages = append(data.Packages, p)
+		Packages []string
 	}
 	w.WriteHeader(http.StatusOK)
+	tmpl := template.Must(template.ParseFiles("templates/home.html"))
 	tmpl.Execute(w, data)
 }
 
