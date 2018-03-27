@@ -4,6 +4,14 @@
         <title>Go Continous test</title>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.8/css/all.css" integrity="sha384-3AB7yXWz4OeoZcPbieVW64vVXEwADiYyAEhwilzWsLw+9FgqpyjjStpPnpBO8o8S" crossorigin="anonymous">
+        <style type="text/css">
+            h1, h2 {
+                font-weight: bold;
+            }
+            section.container-fluid.debug {
+                background-color: #d1ccc0;
+            }
+        </style>
     </head>
     <body>
     <nav class="navbar navbar-expand-md navbar-light bg-light">
@@ -38,7 +46,10 @@
                     <tr>
                         <th>#</th>
                         <th>File Name</th>
-                        <th>Percent</th>
+                        <th class="text-right">Lines</th>
+                        <th class="text-right">Covered</th>
+                        <th class="text-right">Missed</th>
+                        <th class="text-right">Percent</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -46,7 +57,10 @@
                     <tr>
                         <td>{{ $i }}</td>
                         <td>{{ $e.FullName }}</td>
-                        <td>0%</td>
+                        <td class="text-right">{{ $e.Lines }}</td>
+                        <td class="text-right">0</td>
+                        <td class="text-right">0</td>
+                        <td class="text-right">0%</td>
                     </tr>
                     {{ end }}
                     </tbody>
@@ -55,11 +69,13 @@
             </div>
         </div>
     </section>
-    <section class="container debug">
-        <h2>Debug</h2>
-        <code>
-            {{.}}
-        </code>
+    <section class="container-fluid debug p-4">
+        <div class="container">
+            <h2>Debug</h2>
+            <code>
+                {{.}}
+            </code>
+        </div>
     </section>
     <!-- javascript -->
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>

@@ -18,7 +18,10 @@
 package fs
 
 import (
+	"bytes"
 	"fmt"
+	"io"
+	"os"
 
 	"github.com/repejota/ctest/git"
 )
@@ -26,11 +29,43 @@ import (
 // File ...
 type File struct {
 	Name    string
+	Lines   int
 	Package *git.Package
+}
+
+// NewFile ...
+func NewFile(name string, pkg *git.Package) *File {
+	f := &File{
+		Name:    name,
+		Package: pkg,
+	}
+	ff, _ := os.Open(f.FullName())
+	defer ff.Close()
+	f.Lines, _ = lineCounter(ff)
+	return f
 }
 
 // FullName ...
 func (f *File) FullName() string {
 	fullname := fmt.Sprintf("%s/%s", f.Package.Dir, f.Name)
 	return fullname
+}
+
+func lineCounter(r io.Reader) (int, error) {
+	buf := make([]byte, 32*1024)
+	count := 0
+	lineSep := []byte{'\n'}
+
+	for {
+		c, err := r.Read(buf)
+		count += bytes.Count(buf[:c], lineSep)
+
+		switch {
+		case err == io.EOF:
+			return count, nil
+
+		case err != nil:
+			return count, err
+		}
+	}
 }

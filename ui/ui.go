@@ -39,9 +39,7 @@ func HomeHandler(w http.ResponseWriter, r *http.Request) {
 	var files []*fs.File
 	for _, p := range packages {
 		for _, f := range p.GoFiles {
-			file := &fs.File{}
-			file.Name = f
-			file.Package = p
+			file := fs.NewFile(f, p)
 			files = append(files, file)
 		}
 	}
