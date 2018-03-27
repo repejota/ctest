@@ -16,29 +16,54 @@
                 <li class="nav-item mx-1">
                 <a class="nav-link" href="/"><i class="fas d-inline fa-home"></i>&nbsp; Home</a>
                 </li>
-                <li class="nav-item mx-1">
-                <a class="nav-link" href="/test"><i class="fas d-inline fa-list-alt"></i>&nbsp; Tests</a>
-                </li>
-                <li class="nav-item mx-1">
-                <a class="nav-link" href="/cover"><i class="fas d-inline fa-chart-area"></i>&nbsp; Coverage</a>
-                </li>
-                <li class="nav-item mx-1">
-                <a class="nav-link" href="/git"><i class="fab d-inline fa-git-square"></i>&nbsp; Git</a>
-                </li>
             </ul>
             </div>
         </div>
     </nav>
-    <div class="container debug">
-        <ul>
-        {{ range .Packages }}
-            <li>{{ .ImportPath }}</li>
-        {{ end}}
-        </ul>
-        <hr/>
-        {{ . }}
-        </code>
-    </div>
+    <section class="container repository">
+        repository
+    </section>
+    <section class="container commit">
+        commit
+    </section>
+    <section class="container files">
+        files
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td>Mark</td>
+                        <td>Otto</td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>Jacob</td>
+                        <td>Thornton</td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td>Larry</td>
+                        <td>the Bird</td>
+                    </tr>
+                    </tbody>
+                </table>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="container debug">
+        debug
+    </section>
     <!-- javascript -->
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>

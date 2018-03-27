@@ -19,7 +19,6 @@ package git
 
 import (
 	"encoding/json"
-	"fmt"
 	"os/exec"
 	"strings"
 )
@@ -95,18 +94,6 @@ func ListPackages() ([]string, error) {
 	return packagesParts, nil
 }
 
-// GetPackages ...
-func GetPackages() ([]*Package, error) {
-	out, err := exec.Command("go", "list", "-json").Output()
-	if err != nil {
-		return nil, err
-	}
-	fmt.Println(string(out))
-	var packages []*Package
-	json.Unmarshal(out, &packages)
-	return packages, nil
-}
-
 // GetPackage ...
 func GetPackage(importpath string) (*Package, error) {
 	out, err := exec.Command("go", "list", "-json", importpath).Output()
@@ -116,4 +103,17 @@ func GetPackage(importpath string) (*Package, error) {
 	var p *Package
 	json.Unmarshal(out, &p)
 	return p, nil
+}
+
+// GetPackages ...
+func GetPackages(imports ...string) ([]*Package, error) {
+	var list []*Package
+	for _, v := range imports {
+		p, err := GetPackage(v)
+		if err != nil {
+			return list, err
+		}
+		list = append(list, p)
+	}
+	return list, nil
 }

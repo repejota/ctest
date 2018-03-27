@@ -18,7 +18,6 @@
 package ui
 
 import (
-	"fmt"
 	"html/template"
 	"log"
 	"net/http"
@@ -28,37 +27,19 @@ import (
 
 // HomeHandler ...
 func HomeHandler(w http.ResponseWriter, r *http.Request) {
-	// vars := mux.Vars(r)
-
-	tmpl := template.Must(template.ParseFiles("templates/home.html"))
-
-	packages, _ := git.ListPackages()
-
 	var data struct {
-		Packages []*git.Package
+		Packages []string
 	}
-
-	for _, v := range packages {
-		p, err := git.GetPackage(v)
-		if err != nil {
-			log.Println(err)
-		}
-		fmt.Println(p.Dir)
-		data.Packages = append(data.Packages, p)
-	}
-
 	w.WriteHeader(http.StatusOK)
+	tmpl := template.Must(template.ParseFiles("templates/home.html"))
 	tmpl.Execute(w, data)
 }
 
 // TestHandler ...
 func TestHandler(w http.ResponseWriter, r *http.Request) {
-	// vars := mux.Vars(r)
-
 	var data struct {
 		Packages []string
 	}
-
 	w.WriteHeader(http.StatusOK)
 	tmpl := template.Must(template.ParseFiles("templates/test.html"))
 	tmpl.Execute(w, data)
@@ -66,12 +47,18 @@ func TestHandler(w http.ResponseWriter, r *http.Request) {
 
 // CoverHandler ...
 func CoverHandler(w http.ResponseWriter, r *http.Request) {
-	// vars := mux.Vars(r)
-
-	var data struct {
-		Packages []string
+	packageImportsStrings, err := git.ListPackages()
+	if err != nil {
+		log.Println(err)
 	}
-
+	packages, err := git.GetPackages(packageImportsStrings...)
+	if err != nil {
+		log.Println(err)
+	}
+	var data struct {
+		Packages []*git.Package
+	}
+	data.Packages = packages
 	w.WriteHeader(http.StatusOK)
 	tmpl := template.Must(template.ParseFiles("templates/cover.html"))
 	tmpl.Execute(w, data)
@@ -79,12 +66,9 @@ func CoverHandler(w http.ResponseWriter, r *http.Request) {
 
 // GitHandler ...
 func GitHandler(w http.ResponseWriter, r *http.Request) {
-	// vars := mux.Vars(r)
-
 	var data struct {
 		Packages []string
 	}
-
 	w.WriteHeader(http.StatusOK)
 	tmpl := template.Must(template.ParseFiles("templates/git.html"))
 	tmpl.Execute(w, data)
