@@ -8,8 +8,14 @@
             h1, h2 {
                 font-weight: bold;
             }
+            section.container-fluid.commit {
+                background-color: #ecf0f1;
+            }
+            section.container-fluid.repository {
+                background-color: #bdc3c7;
+            }
             section.container-fluid.debug {
-                background-color: #d1ccc0;
+                background-color: #95a5a6;
             }
         </style>
     </head>
@@ -28,17 +34,21 @@
             </div>
         </div>
     </nav>
-    <section class="container repository">
-        <h2>Repository</h2>
-        repository
-    </section>
-    <section class="container commit">
-        <h2>Commit</h2>
-        commit
-    </section>
-    <section class="container files">
-        <h2>Files</h2>
+    <section class="container-fluid repository p-4">
         <div class="container">
+            <h2>Repository</h2>
+            repository
+        </div>
+    </section>
+    <section class="container-fluid commit p-4">
+        <div class="container">
+            <h2>Commit</h2>
+            commit
+        </div>
+    </section>
+    <section class="container-fluid files p-4">
+        <div class="container">
+            <h2>Files</h2>
             <div class="row">
                 <div class="col-md-12">
                 <table class="table">
@@ -56,9 +66,16 @@
                     {{ range $i, $e := .Files }}
                     <tr>
                         <td>{{ $i }}</td>
-                        <td>{{ $e.FullName }}</td>
+                        <td>
+                            {{ $e.FullName }}
+                            <ul> 
+                            {{ range .CoverProfiles}}
+                                <li>{{ .FileName }}</li>
+                            {{ end }}
+                            </ul>
+                        </td>
                         <td class="text-right">{{ $e.Lines }}</td>
-                        <td class="text-right">0</td>
+                        <td class="text-right">{{ $e.Statements }}</td>
                         <td class="text-right">0</td>
                         <td class="text-right">0%</td>
                     </tr>
