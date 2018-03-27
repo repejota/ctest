@@ -21,16 +21,19 @@ import (
 	"bytes"
 	"fmt"
 	"io"
+	"log"
 	"os"
 
 	"github.com/repejota/ctest/git"
+	"golang.org/x/tools/cover"
 )
 
 // File ...
 type File struct {
-	Name    string
-	Lines   int
-	Package *git.Package
+	Name          string
+	Lines         int
+	Package       *git.Package
+	CoverProfiles []*cover.Profile
 }
 
 // NewFile ...
@@ -42,6 +45,13 @@ func NewFile(name string, pkg *git.Package) *File {
 	ff, _ := os.Open(f.FullName())
 	defer ff.Close()
 	f.Lines, _ = lineCounter(ff)
+	wd, _ := os.Getwd()
+	coverageProfilePath := fmt.Sprintf("%s/coverage-all.out", wd)
+	pp, err := cover.ParseProfiles(coverageProfilePath)
+	if err != nil {
+		log.Println(err)
+	}
+	f.CoverProfiles = pp
 	return f
 }
 
@@ -49,6 +59,17 @@ func NewFile(name string, pkg *git.Package) *File {
 func (f *File) FullName() string {
 	fullname := fmt.Sprintf("%s/%s", f.Package.Dir, f.Name)
 	return fullname
+}
+
+// Statements ...
+func (f *File) Statements() int {
+	numStatements := 0
+	for _, p := range f.CoverProfiles {
+		for _, b := range p.Blocks {
+			numStatements = numStatements + b.NumStmt
+		}
+	}
+	return numStatements
 }
 
 func lineCounter(r io.Reader) (int, error) {
