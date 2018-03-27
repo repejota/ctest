@@ -22,14 +22,33 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/repejota/ctest/fs"
 	"github.com/repejota/ctest/git"
 )
 
 // HomeHandler ...
 func HomeHandler(w http.ResponseWriter, r *http.Request) {
-	var data struct {
-		Packages []string
+	packageImportsStrings, err := git.ListPackages()
+	if err != nil {
+		log.Println(err)
 	}
+	packages, err := git.GetPackages(packageImportsStrings...)
+	if err != nil {
+		log.Println(err)
+	}
+	var files []*fs.File
+	for _, p := range packages {
+		for _, f := range p.GoFiles {
+			file := &fs.File{}
+			file.Name = f
+			file.Package = p
+			files = append(files, file)
+		}
+	}
+	var data struct {
+		Files []*fs.File
+	}
+	data.Files = files
 	w.WriteHeader(http.StatusOK)
 	tmpl := template.Must(template.ParseFiles("templates/home.html"))
 	tmpl.Execute(w, data)
