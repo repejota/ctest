@@ -25,14 +25,14 @@ import (
 	"github.com/repejota/ctest"
 )
 
-func TestDummyTest(t *testing.T) {
+func TestDummy(t *testing.T) {
 
 }
 
 func TestNewCTest(t *testing.T) {
 	log.SetLevel(log.FatalLevel)
 
-	_, err := ctest.NewCTest(nil, nil, false)
+	_, err := ctest.NewCTest(nil, false)
 	if err != nil {
 		t.Error(err)
 	}
@@ -42,7 +42,7 @@ func TestNewCTestPathNotExists(t *testing.T) {
 	log.SetLevel(log.FatalLevel)
 
 	paths := []string{"/donotexists"}
-	_, err := ctest.NewCTest(nil, paths, false)
+	_, err := ctest.NewCTest(paths, false)
 	if err == nil {
 		t.Error(err)
 	}
@@ -52,7 +52,7 @@ func TestNewCTestPathNotExistsRelative(t *testing.T) {
 	log.SetLevel(log.FatalLevel)
 
 	paths := []string{"donotexists"}
-	_, err := ctest.NewCTest(nil, paths, false)
+	_, err := ctest.NewCTest(paths, false)
 	if err == nil {
 		t.Error(err)
 	}
@@ -61,7 +61,7 @@ func TestNewCTestPathNotExistsRelative(t *testing.T) {
 func TestRunTests(t *testing.T) {
 	log.SetLevel(log.FatalLevel)
 
-	ct, err := ctest.NewCTest(nil, nil, false)
+	ct, err := ctest.NewCTest(nil, false)
 	if err != nil {
 		t.Error(err)
 	}
@@ -74,7 +74,7 @@ func TestRunTests(t *testing.T) {
 func TestRunTestsFail(t *testing.T) {
 	log.SetLevel(log.FatalLevel)
 
-	ct, err := ctest.NewCTest(nil, nil, false)
+	ct, err := ctest.NewCTest(nil, false)
 	if err != nil {
 		t.Error(err)
 	}

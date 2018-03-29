@@ -32,46 +32,38 @@ import (
 
 // CTest is the main type of the program
 type CTest struct {
-	watchPaths []string
-
+	watchPaths      []string
 	watchExtensions []string
-
-	mu         sync.Mutex
-	watchFiles map[string]time.Time
+	mu              sync.Mutex
+	watchFiles      map[string]time.Time
 }
 
 // NewCTest creates a new instance
-func NewCTest(extensions, paths []string, recursive bool) (*CTest, error) {
+func NewCTest(paths []string, recursive bool) (*CTest, error) {
 	ctest := &CTest{
 		watchPaths:      paths,
-		watchExtensions: extensions,
+		watchExtensions: []string{".go"},
 		watchFiles:      make(map[string]time.Time),
 	}
-
 	// if paths is empty, then use current directory
 	if len(paths) == 0 {
 		cwd, _ := os.Getwd()
 		ctest.watchPaths = []string{cwd}
 	}
-
-	log.Infof("Watching %d paths: %q", len(ctest.watchPaths), ctest.watchPaths)
-
-	// if extensions is empty, then use *.go files
-	if len(extensions) == 0 {
-		ctest.watchExtensions = []string{".go"}
+	log.Infof("Watching %d paths", len(ctest.watchPaths))
+	for _, p := range ctest.watchPaths {
+		log.Infof("Watch: %q", p)
 	}
-
-	log.Infof("Watching %d extensions: %q", len(ctest.watchExtensions), ctest.watchExtensions)
-
 	for _, watchPath := range ctest.watchPaths {
 		err := ctest.getFilesToWatch(watchPath, recursive)
 		if err != nil {
 			return ctest, err
 		}
 	}
-
 	log.Infof("Watching %d files", len(ctest.watchFiles))
-
+	for i := range ctest.watchFiles {
+		log.Infof("Watch: %q", i)
+	}
 	return ctest, nil
 }
 
@@ -91,13 +83,10 @@ func (c *CTest) getFilesToWatch(watchPath string, recursive bool) error {
 				c.mu.Lock()
 				c.watchFiles[path] = info.ModTime()
 				c.mu.Unlock()
-				log.Debugf("Watching: %s", path)
 			}
 		}
 		return nil
 	}
-
-	log.Debugf("Walking: %s", watchPath)
 	err := filepath.Walk(watchPath, walkFunc)
 	if err != nil {
 		return err
@@ -121,7 +110,6 @@ func (c *CTest) StartUI() {
 	r.HandleFunc("/cover", ui.CoverHandler)
 	r.HandleFunc("/git", ui.GitHandler)
 	http.Handle("/", r)
-
 	srv := &http.Server{
 		Handler: r,
 		Addr:    "127.0.0.1:8080",
@@ -142,11 +130,9 @@ func (c *CTest) handleChanges() {
 		ntime := stat.ModTime()
 		if ntime.Sub(modtime) > 0 {
 			log.Debugf("Changed file: %s", file)
-
 			c.mu.Lock()
 			c.watchFiles[file] = ntime
 			c.mu.Unlock()
-
 			c.RunTests("go", "test", "-v", "./...")
 		}
 	}
