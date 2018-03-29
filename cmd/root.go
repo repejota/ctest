@@ -36,6 +36,7 @@ var RootCmd = &cobra.Command{
 	Short: "Watch files and execute tests",
 	Long:  `goctest continuouslly watch for file changes and execute tests`,
 	Run: func(cmd *cobra.Command, args []string) {
+		log.SetLevel(log.DebugLevel)
 		// Setup default logger
 		formatter := &log.TextFormatter{
 			FullTimestamp: true,

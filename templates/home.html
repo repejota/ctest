@@ -34,18 +34,6 @@
             </div>
         </div>
     </nav>
-    <section class="container-fluid repository p-4">
-        <div class="container">
-            <h2>Repository</h2>
-            repository
-        </div>
-    </section>
-    <section class="container-fluid commit p-4">
-        <div class="container">
-            <h2>Commit</h2>
-            commit
-        </div>
-    </section>
     <section class="container-fluid files p-4">
         <div class="container">
             <h2>Files</h2>
@@ -68,7 +56,7 @@
                         <td>{{ $i }}</td>
                         <td>
                             {{ $e.FullName }}
-                            <ul> 
+                            <ul>
                             {{ range .CoverProfiles}}
                                 <li>{{ .FileName }}</li>
                             {{ end }}

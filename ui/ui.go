@@ -23,16 +23,19 @@ import (
 	"net/http"
 
 	"github.com/repejota/ctest/fs"
-	"github.com/repejota/ctest/git"
 )
 
 // HomeHandler ...
 func HomeHandler(w http.ResponseWriter, r *http.Request) {
-	packageImportsStrings, err := git.ListPackages()
+	var data struct {
+		Packages []string
+		Files    []*fs.File
+	}
+	packageImportsStrings, err := fs.ListPackages()
 	if err != nil {
 		log.Println(err)
 	}
-	packages, err := git.GetPackages(packageImportsStrings...)
+	packages, err := fs.GetPackages(packageImportsStrings...)
 	if err != nil {
 		log.Println(err)
 	}
@@ -43,50 +46,9 @@ func HomeHandler(w http.ResponseWriter, r *http.Request) {
 			files = append(files, file)
 		}
 	}
-	var data struct {
-		Files []*fs.File
-	}
+	data.Packages = packageImportsStrings
 	data.Files = files
 	w.WriteHeader(http.StatusOK)
 	tmpl := template.Must(template.ParseFiles("templates/home.html"))
-	tmpl.Execute(w, data)
-}
-
-// TestHandler ...
-func TestHandler(w http.ResponseWriter, r *http.Request) {
-	var data struct {
-		Packages []string
-	}
-	w.WriteHeader(http.StatusOK)
-	tmpl := template.Must(template.ParseFiles("templates/test.html"))
-	tmpl.Execute(w, data)
-}
-
-// CoverHandler ...
-func CoverHandler(w http.ResponseWriter, r *http.Request) {
-	packageImportsStrings, err := git.ListPackages()
-	if err != nil {
-		log.Println(err)
-	}
-	packages, err := git.GetPackages(packageImportsStrings...)
-	if err != nil {
-		log.Println(err)
-	}
-	var data struct {
-		Packages []*git.Package
-	}
-	data.Packages = packages
-	w.WriteHeader(http.StatusOK)
-	tmpl := template.Must(template.ParseFiles("templates/cover.html"))
-	tmpl.Execute(w, data)
-}
-
-// GitHandler ...
-func GitHandler(w http.ResponseWriter, r *http.Request) {
-	var data struct {
-		Packages []string
-	}
-	w.WriteHeader(http.StatusOK)
-	tmpl := template.Must(template.ParseFiles("templates/git.html"))
 	tmpl.Execute(w, data)
 }

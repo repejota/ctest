@@ -19,6 +19,6 @@ package fs_test
 
 import "testing"
 
-func TestDummy(t *testing.T) {
+func TestDummyFile(t *testing.T) {
 
 }

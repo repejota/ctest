@@ -24,7 +24,6 @@ import (
 	"log"
 	"os"
 
-	"github.com/repejota/ctest/git"
 	"golang.org/x/tools/cover"
 )
 
@@ -32,12 +31,12 @@ import (
 type File struct {
 	Name          string
 	Lines         int
-	Package       *git.Package
+	Package       *Package
 	CoverProfiles []*cover.Profile
 }
 
 // NewFile ...
-func NewFile(name string, pkg *git.Package) *File {
+func NewFile(name string, pkg *Package) *File {
 	f := &File{
 		Name:    name,
 		Package: pkg,
@@ -76,7 +75,6 @@ func lineCounter(r io.Reader) (int, error) {
 	buf := make([]byte, 32*1024)
 	count := 0
 	lineSep := []byte{'\n'}
-
 	for {
 		c, err := r.Read(buf)
 		count += bytes.Count(buf[:c], lineSep)

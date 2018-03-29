@@ -15,10 +15,10 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 
-package git_test
+package fs_test
 
 import "testing"
 
-func TestDummy(t *testing.T) {
+func TestDummyPackage(t *testing.T) {
 
 }
