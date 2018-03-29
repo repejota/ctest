@@ -37,22 +37,18 @@ var RootCmd = &cobra.Command{
 	Long:  `goctest continuouslly watch for file changes and execute tests`,
 	Run: func(cmd *cobra.Command, args []string) {
 		// Setup default logger
-		log.SetLevel(log.FatalLevel)
 		formatter := &log.TextFormatter{
 			FullTimestamp: true,
 		}
 		log.SetFormatter(formatter)
-
 		// --verbose
 		if verboseFlag {
 			log.SetLevel(log.DebugLevel)
 		}
-
-		ctest, err := ctest.NewCTest(extensionFlag, args, recursiveWalkerFlag)
+		ctest, err := ctest.NewCTest(args, recursiveWalkerFlag)
 		if err != nil {
 			log.Printf("Error creating ctest instance %v", err)
 		}
-
 		go ctest.StartUI()
 		ctest.Start()
 	},
@@ -71,8 +67,7 @@ func Execute() {
 func init() {
 	// Setup Cobra
 	cobra.OnInitialize(initConfig)
-	RootCmd.Flags().StringArrayVarP(&extensionFlag, "extension", "", []string{".go"}, "set extensions to watch")
-	RootCmd.Flags().BoolVarP(&recursiveWalkerFlag, "recursive", "r", false, "watch files recursively")
+	RootCmd.Flags().BoolVarP(&recursiveWalkerFlag, "recursive", "r", true, "watch files recursively")
 	RootCmd.Flags().BoolVarP(&verboseFlag, "verbose", "v", false, "enable verbose mode")
 }
 
