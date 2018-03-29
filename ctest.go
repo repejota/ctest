@@ -18,32 +18,34 @@
 package ctest
 
 import (
+	"fmt"
 	"net/http"
 	"os"
 	"os/exec"
-	"path/filepath"
 	"sync"
 	"time"
 
 	"github.com/gorilla/mux"
+	"github.com/repejota/ctest/fs"
 	"github.com/repejota/ctest/ui"
 	log "github.com/sirupsen/logrus"
 )
 
 // CTest is the main type of the program
 type CTest struct {
-	watchPaths      []string
-	watchExtensions []string
-	mu              sync.Mutex
-	watchFiles      map[string]time.Time
+	watchPaths []string
+
+	mu         sync.Mutex
+	Packages   map[string]*fs.Package
+	watchFiles map[string]time.Time
 }
 
 // NewCTest creates a new instance
 func NewCTest(paths []string, recursive bool) (*CTest, error) {
 	ctest := &CTest{
-		watchPaths:      paths,
-		watchExtensions: []string{".go"},
-		watchFiles:      make(map[string]time.Time),
+		watchPaths: paths,
+		Packages:   make(map[string]*fs.Package),
+		watchFiles: make(map[string]time.Time),
 	}
 	// if paths is empty, then use current directory
 	if len(paths) == 0 {
@@ -52,46 +54,46 @@ func NewCTest(paths []string, recursive bool) (*CTest, error) {
 	}
 	log.Infof("Watching %d paths", len(ctest.watchPaths))
 	for _, p := range ctest.watchPaths {
-		log.Infof("Watch: %q", p)
+		log.Debugf("Watch: %q", p)
 	}
-	for _, watchPath := range ctest.watchPaths {
-		err := ctest.getFilesToWatch(watchPath, recursive)
-		if err != nil {
-			return ctest, err
+	// get packages from watch paths
+	packageImportsStrings, err := fs.ListPackages()
+	if err != nil {
+		log.Println(err)
+	}
+	packages, err := fs.GetPackages(packageImportsStrings...)
+	if err != nil {
+		log.Println(err)
+	}
+	for _, p := range packages {
+		ctest.Packages[p.ImportPath] = p
+	}
+	log.Infof("Watching %d packages", len(ctest.Packages))
+	for i := range ctest.Packages {
+		log.Debugf("Watch: %q", i)
+	}
+	for _, p := range ctest.Packages {
+		for _, f := range p.GoFiles {
+			path := fmt.Sprintf("%s/%s", p.Dir, f)
+			info, _ := os.Stat(path)
+			ctest.watchFiles[path] = info.ModTime()
+		}
+		for _, f := range p.TestGoFiles {
+			path := fmt.Sprintf("%s/%s", p.Dir, f)
+			info, _ := os.Stat(path)
+			ctest.watchFiles[path] = info.ModTime()
+		}
+		for _, f := range p.XTestGoFiles {
+			path := fmt.Sprintf("%s/%s", p.Dir, f)
+			info, _ := os.Stat(path)
+			ctest.watchFiles[path] = info.ModTime()
 		}
 	}
 	log.Infof("Watching %d files", len(ctest.watchFiles))
 	for i := range ctest.watchFiles {
-		log.Infof("Watch: %q", i)
+		log.Debugf("Watch: %q", i)
 	}
 	return ctest, nil
-}
-
-// getFilesToWatch build the list of files to watch
-func (c *CTest) getFilesToWatch(watchPath string, recursive bool) error {
-	walkFunc := func(path string, info os.FileInfo, err error) error {
-		path, _ = filepath.Abs(path)
-		_, err = os.Stat(path)
-		if err != nil {
-			return err
-		}
-		if info.IsDir() && path != watchPath && !recursive {
-			return filepath.SkipDir
-		}
-		for _, extension := range c.watchExtensions {
-			if filepath.Ext(path) == extension {
-				c.mu.Lock()
-				c.watchFiles[path] = info.ModTime()
-				c.mu.Unlock()
-			}
-		}
-		return nil
-	}
-	err := filepath.Walk(watchPath, walkFunc)
-	if err != nil {
-		return err
-	}
-	return nil
 }
 
 // Start starts the main loop
@@ -106,9 +108,6 @@ func (c *CTest) Start() {
 func (c *CTest) StartUI() {
 	r := mux.NewRouter()
 	r.HandleFunc("/", ui.HomeHandler)
-	r.HandleFunc("/test", ui.TestHandler)
-	r.HandleFunc("/cover", ui.CoverHandler)
-	r.HandleFunc("/git", ui.GitHandler)
 	http.Handle("/", r)
 	srv := &http.Server{
 		Handler: r,
@@ -133,7 +132,7 @@ func (c *CTest) handleChanges() {
 			c.mu.Lock()
 			c.watchFiles[file] = ntime
 			c.mu.Unlock()
-			c.RunTests("go", "test", "-v", "./...")
+			// c.RunTests("go", "test", "-v", "./...")
 		}
 	}
 }
