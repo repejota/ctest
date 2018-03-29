@@ -25,7 +25,7 @@ import (
 	"github.com/repejota/ctest"
 )
 
-func TestDummyTest(t *testing.T) {
+func TestDummy(t *testing.T) {
 
 }
 

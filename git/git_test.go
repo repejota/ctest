@@ -16,3 +16,9 @@
 // under the License.
 
 package git_test
+
+import "testing"
+
+func TestDummy(t *testing.T) {
+
+}
