@@ -38,26 +38,6 @@ func TestNewCTest(t *testing.T) {
 	}
 }
 
-func TestNewCTestPathNotExists(t *testing.T) {
-	log.SetLevel(log.FatalLevel)
-
-	paths := []string{"/donotexists"}
-	_, err := ctest.NewCTest(paths, false)
-	if err == nil {
-		t.Error(err)
-	}
-}
-
-func TestNewCTestPathNotExistsRelative(t *testing.T) {
-	log.SetLevel(log.FatalLevel)
-
-	paths := []string{"donotexists"}
-	_, err := ctest.NewCTest(paths, false)
-	if err == nil {
-		t.Error(err)
-	}
-}
-
 func TestRunTests(t *testing.T) {
 	log.SetLevel(log.FatalLevel)
 
