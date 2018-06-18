@@ -24,11 +24,11 @@ run: install
 # Testing
 
 .PHONY: test
-test:	## Execute package tests 
+test:		## Execute package tests 
 	go test -v $(PACKAGES)
 
 .PHONY: cover-profile
-cover-profile:	## Compile tests coverage data
+cover-profile:
 	echo "mode: count" > coverage-all.out
 	$(foreach pkg,$(PACKAGES),\
 		go test -coverprofile=coverage.out -covermode=count $(pkg);\
@@ -36,38 +36,41 @@ cover-profile:	## Compile tests coverage data
 	rm -rf coverage.out
 
 .PHONY: cover
-cover: cover-profile	## Generate test coverage data
+cover: cover-profile	
+cover: 		## Generate test coverage data
 	go tool cover -func=coverage-all.out
 
 .PHONY: cover-html
-cover-html: cover-profile	## Generate coverage report
+cover-html: cover-profile	
+cover-html:	## Generate coverage HTML report
 	go tool cover -html=coverage-all.out
 
 .PHONY: coveralls
-coveralls:	## Send coverage report
+coveralls:	## Send coverage report to coveralls.io
 	goveralls -service circle-ci -repotoken ACYWS1TOUOtYQpncbY0Ydtaw1Dyh8K8MV
 
 # Lint
 
-lint:	## Lint source code
+lint:		## Lint source code
 	gometalinter --disable-all --enable=errcheck --enable=vet --enable=vetshadow
 
 # Dependencies
 
-deps:	## Install package dependencies
-	go get -v -t -d -u github.com/spf13/cobra/cobra
-	go get -v -t -d -u github.com/sirupsen/logrus
-	go get -v -t -d -u github.com/gorilla/mux
+deps:		## Install package dependencies
+	go get -u github.com/spf13/cobra/cobra
+	go get -u github.com/sirupsen/logrus
+	go get -u github.com/gorilla/mux
 
-dev-deps:	## Install devellpment dependencies
-	go get -v -t -u github.com/alecthomas/gometalinter
+dev-deps: deps	
+dev-deps: 	## Install development dependencies
+	go get -u github.com/alecthomas/gometalinter
 	gometalinter --install
-	go get -v -t -u github.com/mattn/goveralls
+	go get -u github.com/mattn/goveralls
 
 # Cleaning up
 
 .PHONY: clean
-clean:	## Delete generated development environment
+clean:		## Delete generated development environment
 	go clean
 	rm -rf ${BINARY}
 	rm -rf coverage-all.out
@@ -78,6 +81,4 @@ clean:	## Delete generated development environment
 godoc-serve:	## Serve documentation (godoc format) for this package at port HTTP 9090
 	godoc -http=":9090"
 
-.PHONY: help
-help:	## Show this help
-	@fgrep -h "##" $(MAKEFILE_LIST) | fgrep -v fgrep | sed -e 's/\\$$//' | sed -e 's/##//'
+include Makefile.help.mk

@@ -37,20 +37,25 @@ var RootCmd = &cobra.Command{
 	Long:  `goctest continuouslly watch for file changes and execute tests`,
 	Run: func(cmd *cobra.Command, args []string) {
 		log.SetLevel(log.DebugLevel)
+
 		// Setup default logger
 		formatter := &log.TextFormatter{
 			FullTimestamp: true,
 		}
 		log.SetFormatter(formatter)
+
 		// --verbose
 		if verboseFlag {
 			log.SetLevel(log.DebugLevel)
 		}
+
 		ctest, err := ctest.NewCTest(args, recursiveWalkerFlag)
 		if err != nil {
 			log.Printf("Error creating ctest instance %v", err)
 		}
+
 		go ctest.StartUI()
+
 		ctest.Start()
 	},
 }
