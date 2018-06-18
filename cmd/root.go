@@ -34,7 +34,7 @@ var (
 var RootCmd = &cobra.Command{
 	Use:   "goctest",
 	Short: "Watch files and execute tests",
-	Long:  `goctest continuouslly watch for file changes and execute tests`,
+	Long:  `goctest continuously watch for file changes and execute tests`,
 	Run: func(cmd *cobra.Command, args []string) {
 		log.SetLevel(log.DebugLevel)
 
@@ -54,8 +54,10 @@ var RootCmd = &cobra.Command{
 			log.Printf("Error creating ctest instance %v", err)
 		}
 
+		// Start UI on a separate goroutine
 		go ctest.StartUI()
 
+		// Start watching files
 		ctest.Start()
 	},
 }

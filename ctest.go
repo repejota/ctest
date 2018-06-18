@@ -35,17 +35,17 @@ import (
 type CTest struct {
 	watchPaths []string
 
-	mu         sync.Mutex
-	Packages   map[string]*fs.Package
-	watchFiles map[string]time.Time
+	mu            sync.Mutex
+	watchPackages map[string]*fs.Package
+	watchFiles    map[string]time.Time
 }
 
 // NewCTest creates a new instance
 func NewCTest(paths []string, recursive bool) (*CTest, error) {
 	ctest := &CTest{
-		watchPaths: paths,
-		Packages:   make(map[string]*fs.Package),
-		watchFiles: make(map[string]time.Time),
+		watchPaths:    paths,
+		watchPackages: make(map[string]*fs.Package),
+		watchFiles:    make(map[string]time.Time),
 	}
 	// if paths is empty, then use current directory
 	if len(paths) == 0 {
@@ -66,13 +66,13 @@ func NewCTest(paths []string, recursive bool) (*CTest, error) {
 		log.Println(err)
 	}
 	for _, p := range packages {
-		ctest.Packages[p.ImportPath] = p
+		ctest.watchPackages[p.ImportPath] = p
 	}
-	log.Infof("Watching %d packages", len(ctest.Packages))
-	for i := range ctest.Packages {
+	log.Infof("Watching %d packages", len(ctest.watchPackages))
+	for i := range ctest.watchPackages {
 		log.Debugf("Watch: %q", i)
 	}
-	for _, p := range ctest.Packages {
+	for _, p := range ctest.watchPackages {
 		for _, f := range p.GoFiles {
 			path := fmt.Sprintf("%s/%s", p.Dir, f)
 			info, _ := os.Stat(path)
