@@ -2,16 +2,13 @@
 
 Watch files in directory and run tests for them
 
-
 ## Badges
 
 * License [![License][License-Image]][License-Url]
 
 * Test Coverage Master [![Coverage Status](https://coveralls.io/repos/github/repejota/ctest/badge.svg?branch=master)](https://coveralls.io/github/repejota/ctest?branch=master)
-* Test Coverage Develop [![Coverage Status](https://coveralls.io/repos/github/repejota/ctest/badge.svg?branch=develop)](https://coveralls.io/github/repejota/ctest?branch=develop)
 
 * Test Status Master [![CircleCI](https://circleci.com/gh/repejota/ctest/tree/master.svg?style=svg)](https://circleci.com/gh/repejota/ctest/tree/master)
-* Test Status Develop [![CircleCI](https://circleci.com/gh/repejota/ctest/tree/develop.svg?style=svg)](https://circleci.com/gh/repejota/ctest/tree/develop)
 
 * Golang ReportCard [![Go Report Card](https://goreportcard.com/badge/github.com/repejota/ctest)](https://goreportcard.com/report/github.com/repejota/ctest)
 
