@@ -47,16 +47,19 @@ func NewCTest(paths []string, recursive bool) (*CTest, error) {
 		watchPackages: make(map[string]*fs.Package),
 		watchFiles:    make(map[string]time.Time),
 	}
+
 	// if paths is empty, then use current directory
 	if len(paths) == 0 {
 		cwd, _ := os.Getwd()
 		ctest.watchPaths = []string{cwd}
 	}
+
 	log.Infof("Watching %d paths", len(ctest.watchPaths))
 	for _, p := range ctest.watchPaths {
-		log.Debugf("Watch: %q", p)
+		log.Debugf("- %q", p)
 	}
-	// get packages from watch paths
+
+	// get packages to watch from watched paths
 	packageImportsStrings, err := fs.ListPackages()
 	if err != nil {
 		log.Println(err)
@@ -68,10 +71,13 @@ func NewCTest(paths []string, recursive bool) (*CTest, error) {
 	for _, p := range packages {
 		ctest.watchPackages[p.ImportPath] = p
 	}
+
 	log.Infof("Watching %d packages", len(ctest.watchPackages))
 	for i := range ctest.watchPackages {
-		log.Debugf("Watch: %q", i)
+		log.Debugf("- %q", i)
 	}
+
+	// get files to watch from watched packages
 	for _, p := range ctest.watchPackages {
 		for _, f := range p.GoFiles {
 			path := fmt.Sprintf("%s/%s", p.Dir, f)
@@ -89,10 +95,12 @@ func NewCTest(paths []string, recursive bool) (*CTest, error) {
 			ctest.watchFiles[path] = info.ModTime()
 		}
 	}
+
 	log.Infof("Watching %d files", len(ctest.watchFiles))
 	for i := range ctest.watchFiles {
-		log.Debugf("Watch: %q", i)
+		log.Debugf("- %q", i)
 	}
+
 	return ctest, nil
 }
 

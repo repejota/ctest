@@ -45,25 +45,25 @@
                         <th>#</th>
                         <th>File Name</th>
                         <th class="text-right">Lines</th>
-                        <th class="text-right">Covered</th>
+                        <th class="text-right">Statements</th>
                         <th class="text-right">Missed</th>
                         <th class="text-right">Percent</th>
                     </tr>
                     </thead>
                     <tbody>
-                    {{ range $i, $e := .Files }}
+                    {{ range $index, $file := .Files }}
                     <tr>
-                        <td>{{ $i }}</td>
+                        <td>{{ $index }}</td>
                         <td>
-                            {{ $e.FullName }}
+                            {{ $file.FullName }}
                             <ul>
                             {{ range .CoverProfiles}}
                                 <li>{{ .FileName }}</li>
                             {{ end }}
                             </ul>
                         </td>
-                        <td class="text-right">{{ $e.Lines }}</td>
-                        <td class="text-right">{{ $e.Statements }}</td>
+                        <td class="text-right">{{ $file.Lines }}</td>
+                        <td class="text-right">{{ $file.Statements }}</td>
                         <td class="text-right">0</td>
                         <td class="text-right">0%</td>
                     </tr>
@@ -72,14 +72,6 @@
                 </table>
                 </div>
             </div>
-        </div>
-    </section>
-    <section class="container-fluid debug p-4">
-        <div class="container">
-            <h2>Debug</h2>
-            <code>
-                {{.}}
-            </code>
         </div>
     </section>
     <!-- javascript -->
